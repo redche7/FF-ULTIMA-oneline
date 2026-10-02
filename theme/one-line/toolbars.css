@@ -1,0 +1,133 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Layout/reveal ideas incorporate Firnschnee/FoxOne (MIT).
+ * See FOXONE-LICENSE.txt for the original notice.
+ */
+
+:root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
+  --uo-show-delay: 0.1s;
+  --uo-show-duration: 0.3s;
+  --uo-hide-grace: 2s;
+  --uo-hide-duration: 1.5s;
+
+  #nav-bar .toolbarbutton-1 { margin-top: 0 !important; }
+
+  /* Keep native overflow entry points available at narrow widths. */
+  #nav-bar :is(#unified-extensions-button, #PanelUI-button):not([hidden]) {
+    display: flex !important;
+  }
+
+  @media -moz-pref("ultima.navbar.hide.buttons") {
+    #navigator-toolbox {
+      --uo-opacity: 0;
+      --uo-visibility: hidden;
+      --uo-delay: var(--uo-hide-grace);
+      --uo-duration: var(--uo-hide-duration);
+      --uo-visibility-delay: calc(var(--uo-hide-grace) + var(--uo-hide-duration));
+    }
+
+    #nav-bar toolbarbutton:not(.titlebar-button, #urlbar *),
+    #TabsToolbar-customization-target > :is(toolbarbutton, toolbaritem):not(#new-tab-button, #alltabs-button) {
+      opacity: var(--uo-opacity) !important;
+      visibility: var(--uo-visibility) !important;
+      transition: opacity var(--uo-duration) ease var(--uo-delay),
+        visibility 0s linear var(--uo-visibility-delay) !important;
+    }
+
+    &:is(
+      :has(#navigator-toolbox :is(#nav-bar, #TabsToolbar):is(:hover, :focus-within)),
+      :has(#nav-bar toolbarbutton[open]),
+      :has(:is(#appMenu-popup, #unified-extensions-panel, #downloadsPanel,
+        #customizationui-widget-panel, #widget-overflow)[panelopen="true"]),
+      :has(#backForwardMenu[open])
+    ) #navigator-toolbox {
+      --uo-opacity: 1;
+      --uo-visibility: visible;
+      --uo-delay: var(--uo-show-delay);
+      --uo-duration: var(--uo-show-duration);
+      --uo-visibility-delay: var(--uo-show-delay);
+    }
+
+  }
+
+  /* A visible row and an overlay share an opaque surface. Firefox's own
+   * collapsed state remains authoritative; this never forces bookmarks on.
+   */
+  #PersonalToolbar {
+    order: 3 !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    height: var(--uo-bookmarks-height) !important;
+    min-height: var(--uo-bookmarks-height) !important;
+    max-height: var(--uo-bookmarks-height) !important;
+    padding-block: 4px !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    background: linear-gradient(var(--uc-navbar-background, var(--toolbar-bgcolor)),
+      var(--uc-navbar-background, var(--toolbar-bgcolor))), light-dark(#fafaff, #2b2a33) !important;
+    color: var(--uc-text, var(--toolbar-color)) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+  }
+  /* Native XUL treats the presence of collapsed as hidden, irrespective of
+   * its text value. Do not let the measurable overlay override that state.
+   */
+  #PersonalToolbar:is([collapsed], [hidden]) { display: none !important; }
+  @media -moz-pref("ultima.navbar.bookmarks.compact") {
+    #PersonalToolbar { padding-block: 0 !important; }
+  }
+
+  /* Native centering also reads this local variable so a higher-specificity
+   * Ultima selector cannot undo safe alignment when the toolbar overflows.
+   */
+  --uo-bookmarks-justify: start;
+  /* Safe alignment keeps leading bookmarks reachable when items overflow. */
+  #PlacesToolbarItems { justify-content: var(--uo-bookmarks-justify) !important; }
+  @media -moz-pref("ultima.navbar.bookmarks.position", "center") {
+    --uo-bookmarks-justify: safe center;
+  }
+  @media -moz-pref("ultima.navbar.bookmarks.position", "right") {
+    --uo-bookmarks-justify: safe end;
+  }
+
+  @media -moz-pref("ultima.navbar.bookmarks.autohide") {
+    #PersonalToolbar {
+      position: absolute !important;
+      top: 100% !important;
+      inset-inline: 0 !important;
+      /* Keep a measurable hidden box for Places/native overflow. */
+      opacity: 0 !important;
+      visibility: visible !important;
+      pointer-events: none !important;
+      transform: translateY(-8px) !important;
+      transition: opacity 160ms ease, transform 160ms ease !important;
+      z-index: 1001 !important;
+    }
+
+    /* Reveal anywhere on the top chrome; an open folder holds the overlay.
+     * Suggestions have priority over hover/focus, matching the prototype.
+     */
+    &:not(:has(#urlbar:is([open], [popover-open]))) #navigator-toolbox:is(
+      :hover, :has(#PersonalToolbar:focus-within), :has(#PersonalToolbar toolbarbutton[open])
+    ) #PersonalToolbar:not([collapsed], [hidden]) {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: translateY(0) !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    #PersonalToolbar {
+      background: Canvas !important;
+      color: CanvasText !important;
+      box-shadow: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    --uo-show-duration: 0s;
+    --uo-hide-duration: 0s;
+    #PersonalToolbar { transition-duration: 0s !important; }
+  }
+}

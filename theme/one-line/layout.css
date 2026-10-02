@@ -1,0 +1,210 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Layout/reveal ideas incorporate Firnschnee/FoxOne (MIT).
+ * See FOXONE-LICENSE.txt for the original notice.
+ */
+
+:root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
+  --uo-row-height: 44px;
+  /* Use Ultima's tab surface height until a separate appearance module
+   * adjusts it. The hit/drag row keeps its own density-dependent height.
+   */
+  --uo-tab-height: var(--tab-min-height, 35px);
+  --uo-bookmarks-height: 36px;
+  --uo-bookmarks-space: 0px;
+  --uo-menubar-height: 0px;
+  --uo-field-width: clamp(140px, calc(40vw - 140px), 360px);
+  --uo-focus-width: var(--uo-field-width);
+  --uo-tabs-min-space: 176px;
+  --uc-navbar-height: var(--uo-row-height) !important;
+  --uc-tabbar-height: var(--uo-row-height) !important;
+  --uc-bookbar-height: var(--uo-bookmarks-space) !important;
+  --uc-topbars-combined-height: calc(var(--uo-row-height) + var(--uo-menubar-height) + var(--uo-bookmarks-space)) !important;
+
+  &[uidensity="compact"] { --uo-row-height: 40px; }
+  &[uidensity="touch"] {
+    --uo-row-height: 48px;
+  }
+  &:has(#toolbar-menubar:not([inactive="true"])) { --uo-menubar-height: 34px; }
+
+  #navigator-toolbox {
+    position: relative !important;
+    height: var(--uc-topbars-combined-height) !important;
+    min-height: var(--uc-topbars-combined-height) !important;
+    max-height: var(--uc-topbars-combined-height) !important;
+    overflow: visible !important;
+    transition: none !important;
+  }
+
+  #toolbar-menubar {
+    order: 0 !important;
+    --uc-menubar-height: var(--uo-menubar-height) !important;
+    position: relative !important;
+    height: var(--uo-menubar-height) !important;
+    min-height: var(--uo-menubar-height) !important;
+    max-height: var(--uo-menubar-height) !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding-inline: 8px !important;
+  }
+
+  #nav-bar {
+    order: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: var(--uo-row-height) !important;
+    max-height: var(--uo-row-height) !important;
+    padding-block: 0 !important;
+  }
+
+  #nav-bar-customization-target {
+    align-items: center !important;
+    min-width: 0 !important;
+  }
+
+  /* The flexible gap is real nav-bar space. Native overflow must reserve a
+   * useful minimum for tabs instead of consuming the entire row with widgets.
+   * Unlike the old helium layout, the right edge follows actual visible tools.
+   */
+  #nav-bar-customization-target::after {
+    content: "";
+    order: 1;
+    flex: 1 0 var(--uo-tabs-min-space);
+    min-width: var(--uo-tabs-min-space);
+  }
+
+  #nav-bar-customization-target > toolbarspring,
+  #nav-bar .titlebar-spacer,
+  #TabsToolbar .titlebar-spacer {
+    display: none !important;
+  }
+
+  #nav-bar-customization-target > #urlbar-container ~ :is(toolbarbutton, toolbaritem) {
+    order: 2 !important;
+    flex-shrink: 0 !important;
+  }
+
+  #urlbar-container {
+    anchor-name: --uo-field !important;
+    flex: 0 0 var(--uo-field-width) !important;
+    width: var(--uo-field-width) !important;
+    min-width: 0 !important;
+    max-width: var(--uo-field-width) !important;
+    contain: inline-size !important;
+    margin-inline: 0 !important;
+    transition: flex-basis 0.25s ease, width 0.25s ease, max-width 0.25s ease !important;
+  }
+
+  /* nth-child's filtered list includes only visible siblings after the field.
+   * Empty right tool groups fall back to overflow/menu anchors outside target.
+   */
+  #nav-bar-customization-target > :nth-child(1 of #urlbar-container ~ :is(toolbarbutton, toolbaritem):not([hidden], [overflowedItem])) {
+    anchor-name: --uo-right-tools !important;
+  }
+  #nav-bar[overflowing] #nav-bar-overflow-button { anchor-name: --uo-overflow !important; }
+  #PanelUI-button { anchor-name: --uo-menu !important; }
+
+  #TabsToolbar {
+    order: 2 !important;
+    position: absolute !important;
+    top: var(--uo-menubar-height) !important;
+    left: calc(anchor(--uo-field right, 500px) + 8px) !important;
+    right: calc(anchor(--uo-right-tools left, anchor(--uo-overflow left, anchor(--uo-menu left, 138px))) + 4px) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: var(--uo-row-height) !important;
+    min-height: var(--uo-row-height) !important;
+    max-height: var(--uo-row-height) !important;
+    padding: 0 !important;
+    z-index: 1000 !important;
+    -moz-window-dragging: drag;
+  }
+
+  #TabsToolbar .toolbar-items,
+  #TabsToolbar-customization-target {
+    min-width: 0 !important;
+    height: var(--uo-row-height) !important;
+    align-items: center !important;
+  }
+
+  #tabbrowser-tabs[orient="horizontal"]:not([movingtab]) {
+    min-width: 0 !important;
+    padding-top: 0 !important;
+    padding-inline-start: 0 !important;
+    max-height: var(--uo-row-height) !important;
+  }
+  #tabbrowser-tabs[orient="horizontal"] {
+    flex: 1 1 0 !important;
+    --tab-min-height: var(--uo-tab-height);
+    height: calc(var(--uo-tab-height) + 4px) !important;
+  }
+  #tabbrowser-arrowscrollbox,
+  #tabbrowser-arrowscrollbox-periphery {
+    height: calc(var(--uo-tab-height) + 4px) !important;
+    min-height: calc(var(--uo-tab-height) + 4px) !important;
+    max-height: calc(var(--uo-tab-height) + 4px) !important;
+  }
+  #tabbrowser-tabs .tabbrowser-tab {
+    height: var(--uo-tab-height) !important;
+    min-height: var(--uo-tab-height) !important;
+    max-height: var(--uo-tab-height) !important;
+    margin-block: 2px !important;
+  }
+  #tabbrowser-tabs :is(.tab-stack, .tab-background) {
+    height: var(--uo-tab-height) !important;
+    min-height: var(--uo-tab-height) !important;
+    max-height: var(--uo-tab-height) !important;
+  }
+  #tabbrowser-tabs .tab-background {
+    margin-block: 0 !important;
+  }
+  /* Each toolbar has its own native control box. Use the nav box while
+   * active, without changing Ultima's ordinary tab-order preferences.
+   */
+  #toolbar-menubar .titlebar-buttonbox-container,
+  #TabsToolbar .titlebar-buttonbox-container {
+    display: none !important;
+  }
+  #nav-bar .titlebar-buttonbox-container { display: none !important; }
+  @media -moz-pref("ultima.disable.windowcontrols.button") {
+    /* Ultima still offers its menu-bar control box when row controls are off. */
+    &:is([customtitlebar], [inFullscreen]) #toolbar-menubar:not([inactive="true"]) .titlebar-buttonbox-container {
+      display: flex !important;
+    }
+  }
+  @media not -moz-pref("ultima.disable.windowcontrols.button") {
+    &:is([customtitlebar], [inFullscreen]) #nav-bar .titlebar-buttonbox-container {
+      display: flex !important;
+      /* Firefox hides the nav box while Alt opens the native menu bar.
+       * Its menu box is suppressed here, so this remains the sole control box.
+       */
+      visibility: visible !important;
+    }
+  }
+
+  @media -moz-pref("ultima.navbar.bookmarks.compact") {
+    --uo-bookmarks-height: 20px;
+  }
+  @media not -moz-pref("ultima.navbar.bookmarks.autohide") {
+    &:has(#PersonalToolbar:not([collapsed], [hidden])) {
+      --uo-bookmarks-space: var(--uo-bookmarks-height);
+    }
+  }
+  &[inFullscreen="true"] {
+    --uo-menubar-height: 0px;
+    --uo-bookmarks-space: 0px;
+  }
+
+  @media (max-width: 1200px) {
+    --uo-focus-width: min(clamp(140px, calc(50vw - 140px), 360px), max(140px, calc(100vw - 500px)));
+    &:has(#urlbar:is(:focus-within, [focused])) { --uo-field-width: var(--uo-focus-width); }
+  }
+  @media (max-width: 800px) {
+    --uo-tabs-min-space: 136px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #urlbar-container { transition: none !important; }
+  }
+}

@@ -220,20 +220,65 @@ enable bookmark url editting (add bookmark menu)
 
 /* nav bar hide buttons (off hover)  ---------------------------------------------------------------- */
 
-@media -moz-pref("ultima.navbar.hide.buttons") {
-    @media not -moz-pref("ultima.navbar.float") { 
-        @media not -moz-pref("ultima.navbar.float.fullsize") {
-            #nav-bar:not(:focus-within, :hover) toolbarbutton:not(.titlebar-button, #customizationui-widget-panel *) {
-                opacity:0 !important;
-                transition:opacity ease 2s 2s;
+/* One-line owns reveal only in its effective layout scope. Keep the
+ * original rules for disabled/unsupported prefs and document fallbacks.
+ */
+@media not ((-moz-pref("ultima.oneline.enabled"))
+    and (not (-moz-pref("sidebar.verticalTabs")))
+    and (not (-moz-pref("ultima.navbar.autohide")))
+    and (not (-moz-pref("ultima.navbar.float")))
+    and (not (-moz-pref("ultima.navbar.float.fullsize")))
+    and (not (-moz-pref("ultima.navbar.position", "bottom")))
+    and (not (-moz-pref("ultima.navbar.bookmarks.float")))
+    and (not (-moz-pref("ultima.urlbar.float")))
+    and (not (-moz-pref("ultima.tabs.tabbar.autohide")))
+    and (not (-moz-pref("ultima.tabs.tabbar.disabled")))) {
+    @media -moz-pref("ultima.navbar.hide.buttons") {
+        @media not -moz-pref("ultima.navbar.float") {
+            @media not -moz-pref("ultima.navbar.float.fullsize") {
+                #nav-bar:not(:focus-within, :hover) toolbarbutton:not(.titlebar-button, #customizationui-widget-panel *) {
+                    opacity:0 !important;
+                    transition:opacity ease 2s 2s;
+                }
+                :root:has(#appMenu-popup[panelopen="true"]) #PanelUI-menu-button,
+                :root:has(#unified-extensions-panel[panelopen="true"]) #unified-extensions-button,
+                :root:has(#downloadsPanel[panelopen="true"]) #downloads-button,
+                :root:has(#customizationui-widget-panel[panelopen="true"]) #alltabs-button,
+                #nav-bar:not(:focus-within):not(:hover) #downloads-button[progress="true"],
+                #nav-bar:not(:focus-within):not(:hover) #urlbar-searchmode-switcher[open] {
+                    opacity: 1 !important;
+                }
             }
-            :root:has(#appMenu-popup[panelopen="true"]) #PanelUI-menu-button,
-            :root:has(#unified-extensions-panel[panelopen="true"]) #unified-extensions-button,
-            :root:has(#downloadsPanel[panelopen="true"]) #downloads-button,
-            :root:has(#customizationui-widget-panel[panelopen="true"]) #alltabs-button,
-            #nav-bar:not(:focus-within):not(:hover) #downloads-button[progress="true"],
-            #nav-bar:not(:focus-within):not(:hover) #urlbar-searchmode-switcher[open] {
-                opacity: 1 !important;
+        }
+    }
+}
+@media (-moz-pref("ultima.oneline.enabled"))
+    and (not (-moz-pref("sidebar.verticalTabs")))
+    and (not (-moz-pref("ultima.navbar.autohide")))
+    and (not (-moz-pref("ultima.navbar.float")))
+    and (not (-moz-pref("ultima.navbar.float.fullsize")))
+    and (not (-moz-pref("ultima.navbar.position", "bottom")))
+    and (not (-moz-pref("ultima.navbar.bookmarks.float")))
+    and (not (-moz-pref("ultima.urlbar.float")))
+    and (not (-moz-pref("ultima.tabs.tabbar.autohide")))
+    and (not (-moz-pref("ultima.tabs.tabbar.disabled"))) {
+    :where(:root:is([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"], :not(:has(#tabbrowser-tabs[orient="horizontal"])))) {
+        @media -moz-pref("ultima.navbar.hide.buttons") {
+            @media not -moz-pref("ultima.navbar.float") {
+                @media not -moz-pref("ultima.navbar.float.fullsize") {
+                    #nav-bar:not(:focus-within, :hover) toolbarbutton:not(.titlebar-button, #customizationui-widget-panel *) {
+                        opacity:0 !important;
+                        transition:opacity ease 2s 2s;
+                    }
+                    &:root:has(#appMenu-popup[panelopen="true"]) #PanelUI-menu-button,
+                    &:root:has(#unified-extensions-panel[panelopen="true"]) #unified-extensions-button,
+                    &:root:has(#downloadsPanel[panelopen="true"]) #downloads-button,
+                    &:root:has(#customizationui-widget-panel[panelopen="true"]) #alltabs-button,
+                    #nav-bar:not(:focus-within):not(:hover) #downloads-button[progress="true"],
+                    #nav-bar:not(:focus-within):not(:hover) #urlbar-searchmode-switcher[open] {
+                        opacity: 1 !important;
+                    }
+                }
             }
         }
     }
@@ -311,7 +356,7 @@ enable bookmark url editting (add bookmark menu)
                 #main-window, #main-window:not([lwtheme]) {
                     :has(#PlacesToolbar #PlacesChevron[collapsed]) {
                         #PlacesToolbarItems {
-                            justify-content: center !important;
+                            justify-content: var(--uo-bookmarks-justify, center) !important;
                         }
                     }
                 }
@@ -327,7 +372,7 @@ enable bookmark url editting (add bookmark menu)
                     #main-window, #main-window:not([lwtheme]) {
                         :has(#PlacesToolbar #PlacesChevron[collapsed]) {
                             #PlacesToolbarItems {
-                                justify-content: center !important;
+                                justify-content: var(--uo-bookmarks-justify, center) !important;
                             }
                         }
                     }
@@ -358,33 +403,88 @@ enable bookmark url editting (add bookmark menu)
 
 /* bookmarks autohide ------------------------------------------------------------------------------- */
 
-@media -moz-pref("ultima.navbar.bookmarks.autohide") { @media not -moz-pref("ultima.navbar.bookmarks.float") {  @media not -moz-pref("ultima.navbar.autohide") {
-    :root:has(#navigator-toolbox:hover) {
-        #navigator-toolbox {transition: max-height, height, 0.5s ease !important;}
-        #PersonalToolbar {transition: max-height, height, 0.1s ease;}
-    }
-    :root:has(#PersonalToolbar[collapsed="false"]):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])),
-    :root:has(#PersonalToolbar:not([collapsed])):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])) {
-        &#main-window:not([inFullscreen="true"]) {
-            /* hide --uc-bookbar-height:1px !important;*/
-            --uc-bookbar-height:0px !important;
-            #navigator-toolbox {transition: max-height, height, 0.9s ease 0.9s !important;}
-            #PersonalToolbar {transition: max-height, height, 0.3s ease 0.9s !important;}
-            /* visibility */
-            #PlacesToolbarItems {
-                /* default */
-                overflow:visible !important;
-                opacity: 1 !important;
-                transition: opacity 0.3s ease-out;
-                /* display */
-                &:hover {
+/* One-line owns reveal only in its effective layout scope. Keep the
+ * original rules for disabled/unsupported prefs and document fallbacks.
+ */
+@media not ((-moz-pref("ultima.oneline.enabled"))
+    and (not (-moz-pref("sidebar.verticalTabs")))
+    and (not (-moz-pref("ultima.navbar.autohide")))
+    and (not (-moz-pref("ultima.navbar.float")))
+    and (not (-moz-pref("ultima.navbar.float.fullsize")))
+    and (not (-moz-pref("ultima.navbar.position", "bottom")))
+    and (not (-moz-pref("ultima.navbar.bookmarks.float")))
+    and (not (-moz-pref("ultima.urlbar.float")))
+    and (not (-moz-pref("ultima.tabs.tabbar.autohide")))
+    and (not (-moz-pref("ultima.tabs.tabbar.disabled")))) {
+    @media -moz-pref("ultima.navbar.bookmarks.autohide") { @media not -moz-pref("ultima.navbar.bookmarks.float") {  @media not -moz-pref("ultima.navbar.autohide") {
+        :root:has(#navigator-toolbox:hover) {
+            #navigator-toolbox {transition: max-height, height, 0.5s ease !important;}
+            #PersonalToolbar {transition: max-height, height, 0.1s ease;}
+        }
+        :root:has(#PersonalToolbar[collapsed="false"]):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])),
+        :root:has(#PersonalToolbar:not([collapsed])):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])) {
+            &#main-window:not([inFullscreen="true"]) {
+                /* hide --uc-bookbar-height:1px !important;*/
+                --uc-bookbar-height:0px !important;
+                #navigator-toolbox {transition: max-height, height, 0.9s ease 0.9s !important;}
+                #PersonalToolbar {transition: max-height, height, 0.3s ease 0.9s !important;}
+                /* visibility */
+                #PlacesToolbarItems {
+                    /* default */
+                    overflow:visible !important;
                     opacity: 1 !important;
-                    transition: opacity 0.2s ease-in;
+                    transition: opacity 0.3s ease-out;
+                    /* display */
+                    &:hover {
+                        opacity: 1 !important;
+                        transition: opacity 0.2s ease-in;
+                    }
                 }
             }
         }
+    }}}
+}
+@media (-moz-pref("ultima.oneline.enabled"))
+    and (not (-moz-pref("sidebar.verticalTabs")))
+    and (not (-moz-pref("ultima.navbar.autohide")))
+    and (not (-moz-pref("ultima.navbar.float")))
+    and (not (-moz-pref("ultima.navbar.float.fullsize")))
+    and (not (-moz-pref("ultima.navbar.position", "bottom")))
+    and (not (-moz-pref("ultima.navbar.bookmarks.float")))
+    and (not (-moz-pref("ultima.urlbar.float")))
+    and (not (-moz-pref("ultima.tabs.tabbar.autohide")))
+    and (not (-moz-pref("ultima.tabs.tabbar.disabled"))) {
+    :where(:root:is([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"], :not(:has(#tabbrowser-tabs[orient="horizontal"])))) {
+        @media -moz-pref("ultima.navbar.bookmarks.autohide") { @media not -moz-pref("ultima.navbar.bookmarks.float") {  @media not -moz-pref("ultima.navbar.autohide") {
+            &:root:has(#navigator-toolbox:hover) {
+                #navigator-toolbox {transition: max-height, height, 0.5s ease !important;}
+                #PersonalToolbar {transition: max-height, height, 0.1s ease;}
+            }
+            &:root:has(#PersonalToolbar[collapsed="false"]):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])),
+            &:root:has(#PersonalToolbar:not([collapsed])):not(:has(#navigator-toolbox:hover)):has(#placesContext:not(:hover)):not(:has(.bookmark-item[open])) {
+                &#main-window:not([inFullscreen="true"]) {
+                    /* hide --uc-bookbar-height:1px !important;*/
+                    --uc-bookbar-height:0px !important;
+                    #navigator-toolbox {transition: max-height, height, 0.9s ease 0.9s !important;}
+                    #PersonalToolbar {transition: max-height, height, 0.3s ease 0.9s !important;}
+                    /* visibility */
+                    #PlacesToolbarItems {
+                        /* default */
+                        overflow:visible !important;
+                        opacity: 1 !important;
+                        transition: opacity 0.3s ease-out;
+                        /* display */
+                        &:hover {
+                            opacity: 1 !important;
+                            transition: opacity 0.2s ease-in;
+                        }
+                    }
+                }
+            }
+        }}}
     }
-}}}
+}
+
 @media -moz-pref("ultima.navbar.bookmarks.autohide") { @media -moz-pref("ultima.navbar.bookmarks.float") {
     #main-window, #main-window:not([lwtheme]) {
         /* initial setup */

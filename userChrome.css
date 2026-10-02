@@ -34,4 +34,17 @@ License:           https://github.com/soulhotel/FF-ULTIMA/blob/main/LICENSE MPL 
 
 @import url(theme/ffu-special-configs.css);
 
+/* Optional one-line mode; unsupported layout combinations keep Ultima. */
+@import url("theme/one-line/index.css")
+  (-moz-pref("ultima.oneline.enabled"))
+  and (not (-moz-pref("sidebar.verticalTabs")))
+  and (not (-moz-pref("ultima.navbar.autohide")))
+  and (not (-moz-pref("ultima.navbar.float")))
+  and (not (-moz-pref("ultima.navbar.float.fullsize")))
+  and (not (-moz-pref("ultima.navbar.position", "bottom")))
+  and (not (-moz-pref("ultima.navbar.bookmarks.float")))
+  and (not (-moz-pref("ultima.urlbar.float")))
+  and (not (-moz-pref("ultima.tabs.tabbar.autohide")))
+  and (not (-moz-pref("ultima.tabs.tabbar.disabled")));
+
 @import url(customChrome.css);

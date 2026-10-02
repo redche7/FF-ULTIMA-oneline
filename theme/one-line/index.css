@@ -1,0 +1,14 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Layout/reveal ideas incorporate Firnschnee/FoxOne (MIT).
+ * See FOXONE-LICENSE.txt for the original notice.
+ */
+
+/* Eligibility is shared with the native reveal guards in settings-navbar.css.
+ * Every module also scopes out Customize, vertical/popup and DOM fullscreen.
+ */
+@import url("layout.css");
+@import url("toolbars.css");
+@import url("urlbar.css");
