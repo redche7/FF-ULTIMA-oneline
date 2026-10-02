@@ -1,0 +1,41 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Keep Ultima's New Tab search field bounds consistent on Firefox 157.
+ * Responsive width and native search handoff remain unchanged.
+ */
+@-moz-document url("about:newtab"), url("about:home") {
+  :root { --uo-newtab-search-height: 44px; }
+
+  /* Ultima sets this wrapper to auto height. The newer handoff component
+   * then shrinks to its text while the search icon keeps its native size.
+   * Provide a definite block size so the component can stretch as one field.
+   */
+  .search-wrapper .search-inner-wrapper {
+    height: var(--uo-newtab-search-height) !important;
+    min-height: var(--uo-newtab-search-height) !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+  }
+
+  .search-wrapper :is(content-search-handoff-ui, moz-urlbar) {
+    height: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    --urlbar-height: var(--uo-newtab-search-height) !important;
+    --content-search-handoff-ui-border-radius: 18px !important;
+  }
+
+  /* Older/light-DOM handoff markup uses the same spacing. Native shadow-DOM
+   * controls retain their own icon/text padding; do not recreate their internals.
+   */
+  .search-wrapper :is(.search-handoff-button, #newtab-search-text) {
+    height: 100% !important;
+    box-sizing: border-box !important;
+    padding-inline-start: 48px !important;
+    padding-inline-end: 16px !important;
+    background-position: 16px center !important;
+    border-radius: 18px !important;
+  }
+}
