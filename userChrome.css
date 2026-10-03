@@ -39,6 +39,7 @@ License:           https://github.com/soulhotel/FF-ULTIMA/blob/main/LICENSE MPL 
 @import url("theme/compat/tab-outlines.css");
 @import url("theme/compat/tab-group-labels.css");
 @import url("theme/compat/tab-group-preview.css");
+@import url("theme/compat/tab-group-counters.css");
 
 /* Optional one-line mode; unsupported layout combinations keep Ultima. */
 @import url("theme/one-line/index.css")

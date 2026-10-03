@@ -1,0 +1,28 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+:root #tabbrowser-tabs[orient="horizontal"] tab-group[collapsed][hasactivetab] {
+  /* Ultima's absolute label overlay uses a percentage width and unset insets.
+   * Its paint can reach the counter and New Tab. Keep the count as plain text
+   * beside the label instead of drawing a separate active-group surface. */
+  .tab-group-label::after {
+    content: none !important;
+  }
+
+  > .tab-group-label-container {
+    padding-inline-end: 0;
+  }
+
+  > .tab-group-overflow-count-container {
+    padding-inline-start: 0;
+  }
+
+  .tab-group-overflow-count {
+    margin-inline: 0 !important;
+    z-index: auto;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
