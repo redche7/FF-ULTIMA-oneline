@@ -34,6 +34,9 @@ License:           https://github.com/soulhotel/FF-ULTIMA/blob/main/LICENSE MPL 
 
 @import url(theme/ffu-special-configs.css);
 
+/* Nova compatibility fixes also apply to ordinary Ultima layouts. */
+@import url("theme/compat/tab-outlines.css");
+
 /* Optional one-line mode; unsupported layout combinations keep Ultima. */
 @import url("theme/one-line/index.css")
   (-moz-pref("ultima.oneline.enabled"))

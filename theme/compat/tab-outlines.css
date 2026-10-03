@@ -1,0 +1,56 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/* Ultima's full gradient is painted by the selected tab's stack pseudo-element.
+ * Nova's accent border and selection outline would add frames beneath it in
+ * both horizontal and vertical layouts, including active multiselection.
+ */
+@media -moz-pref("browser.nova.enabled")
+  and -moz-pref("ultima.tabs.tab.outline", "full")
+  and -moz-pref("ultima.tabs.tab.outline.color", "gradient") {
+  @media not ((forced-colors) or (prefers-contrast) or (-moz-native-theme)) {
+    #tabbrowser-tabs {
+      &[orient="vertical"] .tabbrowser-tab[selected] > .tab-stack {
+        /* Ultima offsets this ring with fixed platform/pinned margins. Anchor
+         * it to the actual surface instead, including collapsed pinned grids. */
+        position: relative;
+        anchor-scope: --ffu-tab-surface;
+
+        > .tab-background {
+          anchor-name: --ffu-tab-surface;
+        }
+
+        &::after {
+          position: absolute;
+          position-anchor: --ffu-tab-surface;
+          inset-block-start: anchor(top);
+          inset-block-end: anchor(bottom);
+          inset-inline-start: anchor(start);
+          inset-inline-end: anchor(end);
+          margin: 0 !important;
+          box-sizing: border-box;
+          border-radius: var(--tab-border-radius) !important;
+          padding: 1px;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+          pointer-events: none;
+        }
+      }
+
+      .tabbrowser-tab[selected] > .tab-stack > .tab-background {
+        /* Neutralize only Nova's accent layer; retain the surface and any
+         * container styling instead of replacing the background shorthand. */
+        --tab-border-color-accent: linear-gradient(transparent, transparent);
+      }
+
+      /* Other multiselected tabs keep their native selection outline. So do
+       * keyboard focus and the group drop target, even on the active tab. */
+      &:not([tablist-has-focus]) .tabbrowser-tab[selected]:not([dragover-groupTarget]) > .tab-stack > .tab-background,
+      &[tablist-has-focus] .tabbrowser-tab[selected]:not(.tablist-keyboard-focus, [dragover-groupTarget]) > .tab-stack > .tab-background {
+        outline: none !important;
+      }
+    }
+  }
+}

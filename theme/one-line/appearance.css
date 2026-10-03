@@ -25,19 +25,15 @@
     @media -moz-pref("ultima.tabs.tab.outline", "full") and -moz-pref("ultima.tabs.tab.outline.color", "gradient") {
       /* Ultima paints its full gradient on this existing pseudo-element.
        * The clipped SVG stroke yields a thin ring with matching 8px corners.
-       * Other outline modes and multiselection keep their native paint.
+       * Other outline modes keep their native paint. The compatibility module
+       * handles Nova's duplicate frame in every Ultima layout.
        */
-      #tabbrowser-tabs .tabbrowser-tab[selected]:not([multiselected]) > .tab-stack::after {
+      #tabbrowser-tabs .tabbrowser-tab[selected] > .tab-stack::after {
         box-sizing: border-box;
         border-radius: var(--uo-tab-radius) !important;
         padding: 0 !important;
         mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' rx='8' width='100%25' height='100%25' stroke='red' stroke-width='2' fill='none' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") !important;
         pointer-events: none;
-      }
-      /* Nova otherwise paints another frame behind Ultima's gradient ring. */
-      #tabbrowser-tabs .tab-background[selected]:not([multiselected]) {
-        outline: none !important;
-        background-image: none !important;
       }
     }
     @media (prefers-color-scheme: dark) and -moz-pref("user.theme.0.default") {
