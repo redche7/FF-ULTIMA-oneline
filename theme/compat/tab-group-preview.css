@@ -1,0 +1,16 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+@media not ((forced-colors) or (prefers-contrast)) {
+  #main-window:not([lwtheme]) #tabgroup-preview-panel {
+    /* Current Firefox paints the panel padding with this token, rather than
+     * Ultima's older --panel-background. Use one surface for the entire popup. */
+    --panel-background-color: var(--uc-panel-background) !important;
+
+    #tabgroup-panel-content {
+      background-color: transparent !important;
+    }
+  }
+}
