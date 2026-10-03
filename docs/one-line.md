@@ -1,98 +1,20 @@
-# Optional one-line layout
+# One-line settings
 
-The fork can place the address bar, horizontal tabs and navigation buttons on
-one row while retaining Ultima's color schemes. This implementation targets
-Firefox 157 with Nova. Appearance refinements are still in progress.
+Use horizontal tabs and enable Nova (`browser.nova.enabled=true`).
 
-## Enable or disable
+Set the boolean `ultima.oneline.enabled` in `about:config`, then restart Firefox:
 
-Create the boolean `ultima.oneline.enabled` in `about:config` and set it to
-`true`. Restart Firefox to reload the stylesheets. A missing or `false` value
-leaves ordinary Ultima active.
+- `true`: enable one-line; included in this fork's `user.js` preset.
+- `false`: restore ordinary Ultima. A missing preference also leaves it active.
 
-For a persistent preset, add this line to your profile's `user.js`:
+If you keep `user.js` in your profile, update its matching entry too;
+otherwise it reapplies the preset at startup.
 
-```js
-user_pref("ultima.oneline.enabled", true);
-```
+Vertical tabs, Customize Toolbar, popup windows and page fullscreen use ordinary
+Ultima. Floating bars, a bottom navbar, navbar autohide or a hidden/autohiding tab
+bar also retain Ultima's layout.
 
-To disable permanently, change it to `false` or remove it and set the preference
-to `false` in `about:config`. A `true` entry in `user.js` reapplies on startup.
-One-line is opt-in; the fork's default `user.js` leaves the preference unset.
+`ultima.spacing.compact.tabs` does not shrink tabs separately in one-line mode;
+it keeps its original behavior in ordinary Ultima.
 
-## Existing Ultima settings
-
-| Preference | Behavior while one-line is active |
-| --- | --- |
-| `ultima.navbar.hide.buttons` | `true`: reveal buttons together on navigation/tab hover or focus; an open toolbar popup holds them. `false`: keep buttons visible. |
-| `ultima.navbar.bookmarks.autohide` | `true`: reveal bookmarks over the page on toolbox hover, keyboard focus or an open folder. Hide the overlay while address suggestions are open. `false`: keep a bookmarks row below the combined row. |
-| `ultima.navbar.bookmarks.position` | `left`, `center`, `right`; alignment falls back toward the start when items overflow. |
-| `ultima.navbar.bookmarks.compact` | Use Ultima's compact 20px bookmarks height instead of the normal 36px row/overlay. |
-| `ultima.disable.windowcontrols.button` | Hide controls in the combined row; retain Ultima's visible-menu-bar control fallback. |
-
-Firefox's own bookmarks visibility still applies. One-line does not reveal a
-toolbar hidden through Firefox's toolbar menu. Window density controls the
-combined row height; no preference values are changed by CSS.
-
-## Tab appearance
-
-Tab surfaces have 8px corners and are 30 CSS px high at normal/compact window
-density, and 34px at touch density. `ultima.spacing.compact.tabs` does not resize
-them separately while one-line is active; it retains its ordinary Ultima behavior
-in fallback mode. The combined toolbar row keeps its existing density-dependent
-height. Further reductions across the whole row are not part of this appearance
-module. Display scaling can make screenshot measurements differ from CSS sizes.
-
-The full gradient outline uses a thin clipped SVG ring and suppresses Nova's
-additional selected frame. Other outline modes and multiselection retain their existing outlines; forced
-colors retain their existing paint. Reduced motion stops full/top outline animations.
-
-The default dark scheme uses opaque `#171519` for selected, multiselected and
-dragged tab surfaces as a reference appearance choice. Other color schemes and container tabs retain their selected
-fill; container styles keep their matching text color. These rules
-apply only while one-line is active; vertical and ordinary Ultima tabs are outside
-this module's scope.
-
-## Fallbacks
-
-One-line applies to ordinary horizontal-tab windows. Customize Toolbar, vertical
-tabs, popup windows and page DOM fullscreen retain Ultima's layout.
-
-The following Ultima combinations also retain their existing layout rather than
-activate one-line:
-
-- Navbar autohide, floating/fullsize navbar or a bottom navbar.
-- Floating bookmarks or a floating URL bar.
-- Hidden/autohiding tab bar.
-
-F11 browser fullscreen is separate from page DOM fullscreen and needs its own
-manual check. Prototype feedback so far has been on Windows; Linux/macOS have
-not been verified. The current appearance work targets dark mode. Very narrow
-windows and precise tab/suggestions appearance remain unfinished.
-
-## Timings and custom styles
-
-The defaults in `theme/one-line/toolbars.css` are:
-
-| Variable | Default |
-| --- | --- |
-| `--uo-show-delay` | `0.1s` |
-| `--uo-show-duration` | `0.3s` |
-| `--uo-hide-grace` | `2s` |
-| `--uo-hide-duration` | `1.5s` |
-
-Bookmarks use 160ms opacity/slide transitions without a delay. Reduced motion
-removes movement/fade durations.
-
-`customChrome.css` and `customContent.css` remain the final user extension
-points. To override timing variables without affecting ordinary Ultima, use
-this selector in `customChrome.css`:
-
-```css
-:root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
-  --uo-hide-duration: 1.5s;
-}
-```
-
-The one-line modules retain MPL-2.0 notices and acknowledge the MIT-licensed
-FoxOne layout/reveal ideas in `theme/one-line/FOXONE-LICENSE.txt`.
+For all other settings, see the [Ultima Wiki](https://ff-ultima.github.io/docs/category/theme-settings).

@@ -28,6 +28,9 @@ user_pref("user.theme.brave", false);
 user_pref("user.theme.ayu", false);
 user_pref("user.theme.rose-pine", false);
 
+/* fork one-line layout; false restores ordinary Ultima on restart */
+user_pref("ultima.oneline.enabled", true);
+
 /* nav bar */
 user_pref("ultima.navbar.autohide", false);
 user_pref("ultima.navbar.float", false);
