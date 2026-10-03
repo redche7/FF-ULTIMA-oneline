@@ -1,0 +1,54 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/* Style 3's arrow and text share one centered line. Let Firefox's existing
+ * pack="center" wrappers position it instead of offsetting the label inside
+ * a shorter container. Other label styles retain their own geometry.
+ */
+@media -moz-pref("ultima.tabs.tabgroups.label.3") {
+  :root #tabbrowser-tabs[orient] {
+    &[orient="horizontal"] {
+      --ffu-group-label-height: var(--tab-group-label-height);
+    }
+    &[orient="vertical"] {
+      --ffu-group-label-height: 25px;
+    }
+
+    .tab-group-label-container {
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+    }
+
+    .tab-group-label-container > .tab-group-label-hover-highlight {
+      /* Nova gives this wrapper a separate size; match the label so sidebar
+       * expansion and active collapsed groups keep the same text position. */
+      block-size: var(--ffu-group-label-height) !important;
+      padding-block: 0 !important;
+    }
+
+    .tab-group-label-container > .tab-group-label-hover-highlight > .tab-group-label {
+      box-sizing: border-box;
+      height: var(--ffu-group-label-height) !important;
+      min-height: var(--ffu-group-label-height) !important;
+      max-height: var(--ffu-group-label-height) !important;
+      line-height: var(--ffu-group-label-height) !important;
+      margin-block: 0 !important;
+      padding-block: 0 !important;
+      background-size: 12px 12px;
+    }
+
+    &[orient="horizontal"] .tab-group-label {
+      background-position: left 0 center !important;
+    }
+    &[orient="vertical"] .tab-group-label {
+      background-position: left 5.5px center !important;
+    }
+    &[orient="vertical"]:not([expanded]) .tab-group-label::first-letter {
+      line-height: var(--ffu-group-label-height) !important;
+      padding-block: 0 !important;
+    }
+  }
+}
