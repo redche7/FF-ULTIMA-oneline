@@ -15,9 +15,8 @@
     margin-top: 0 !important;
   }
 
-  /* Preserve the prototype's neutral focus frame and native popover.
-   * Joint background offsets/separator still need a separate refinement;
-   * these rules do not yet make the two background halves flush.
+  /* Keep Nova's anchored popover and two clipped background halves.
+   * Both halves use the same field width, paint and neutral frame.
    */
   @media not (forced-colors) {
     #urlbar {
@@ -27,6 +26,10 @@
       --urlbar-background-overhang-open: 0px;
       --urlbarView-margin-block: 0px;
       --urlbarView-margin-inline: 0px;
+      /* These derived values otherwise inherit root's resolved overhang and
+       * margins, even when their inputs are overridden on this field. */
+      --urlbarView-joint-background-outset-inline: calc(var(--urlbar-background-overhang-open) + var(--urlbarView-margin-inline));
+      --urlbarView-joint-background-outset-block: calc(var(--urlbar-background-overhang-open) + var(--urlbarView-margin-block));
       --urlbar-background-color-focus: var(--uc-urlbar-background);
       --urlbar-background-border-open: 1px solid var(--uo-field-frame);
     }
@@ -47,6 +50,22 @@
     }
     #urlbar > .urlbarView {
       padding: 0 !important;
+    }
+    #urlbar:not([noresults]) > .urlbarView {
+      /* The filled strip belongs outside the result scrollport, so scrolling
+       * and selected rows cannot cover the divider beneath the input. */
+      border-block-start: 1px solid var(--uo-field-frame) !important;
+      padding-block-start: 6px !important;
+    }
+    #urlbar > .urlbarView > .urlbarView-background {
+      background-color: var(--uc-urlbar-background) !important;
+      box-shadow: var(--uc-box-shadow) !important;
+      border-end-start-radius: 8px !important;
+      border-end-end-radius: 8px !important;
+    }
+    #urlbar[popover-open] {
+      /* The clipped background halves already draw the shared shadow. */
+      box-shadow: none !important;
     }
   }
 
