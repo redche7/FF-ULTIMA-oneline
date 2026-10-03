@@ -38,10 +38,8 @@
       }
     }
     @media (prefers-color-scheme: dark) and -moz-pref("user.theme.0.default") {
-      /* Reference appearance choice for the default dark scheme, not a
-       * universal compatibility fix. Other palettes and container tabs retain
-       * their own fill/text pairing.
-       */
+      /* Use an opaque selected surface in the default dark scheme. Other
+       * palettes and container tabs retain their own fill/text pairing. */
       #tabbrowser-tabs .tabbrowser-tab:not([usercontextid]) {
         /* Native drag-stack shadows also use the selected surface color. */
         --tab-background-color-selected: #171519 !important;

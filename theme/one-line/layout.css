@@ -264,8 +264,7 @@
     --uo-field-min-width: 100px;
   }
   @media (max-width: 550px) {
-    /* At 125% scaling, a ~630 physical-pixel window is only ~500 CSS pixels.
-     * Keep the core navigation/menu controls and one scrollable tab available. */
+    /* Keep core navigation/menu controls and a scrollable tab on narrow windows. */
     --uo-field-min-width: 64px;
     --uo-tabs-min-space: 96px;
   }

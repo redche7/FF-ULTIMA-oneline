@@ -47,11 +47,8 @@
       display: none !important;
     }
 
-    /* Firefox does not overflow this entry point. Use its existing app-menu
-     * command instead. Retain an invisible, out-of-flow box at the menu so
-     * native extension panels still have a measurable popup anchor. */
-    /* Include the target ID: the hide.buttons selector also has an ID in
-     * :not(), and must not reveal this relocated anchor on toolbar hover. */
+    /* Use the app-menu command and retain a measurable popup anchor outside
+     * the row. The target ID keeps hide.buttons hover rules from revealing it. */
     #nav-bar #nav-bar-customization-target > #unified-extensions-button {
       position: absolute !important;
       top: 0 !important;
@@ -154,7 +151,7 @@
     }
 
     /* Reveal anywhere on the top chrome; an open folder holds the overlay.
-     * Suggestions have priority over hover/focus, matching the prototype.
+     * URL suggestions take priority over bookmarks hover/focus.
      */
     &:not(:has(#urlbar:is([open], [popover-open]))) #navigator-toolbox:is(
       :hover, :has(#PersonalToolbar:focus-within), :has(#PersonalToolbar toolbarbutton[open])
