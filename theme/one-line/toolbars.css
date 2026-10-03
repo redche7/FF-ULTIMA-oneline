@@ -41,6 +41,32 @@
     display: flex !important;
   }
 
+  @media (width <= 650px) {
+    #nav-bar-customization-target > toolbarspring,
+    #TabsToolbar-customization-target > toolbarspring {
+      display: none !important;
+    }
+
+    /* Firefox does not overflow this entry point. Use its existing app-menu
+     * command instead. Retain an invisible, out-of-flow box at the menu so
+     * native extension panels still have a measurable popup anchor. */
+    /* Include the target ID: the hide.buttons selector also has an ID in
+     * :not(), and must not reveal this relocated anchor on toolbar hover. */
+    #nav-bar #nav-bar-customization-target > #unified-extensions-button {
+      position: absolute !important;
+      top: 0 !important;
+      right: anchor(--uo-menu right, 108px) !important;
+      width: anchor-size(--uo-menu width, 28px) !important;
+      height: var(--uo-row-height) !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: none !important;
+    }
+    #appMenu-unified-extensions-button { display: flex !important; }
+    #appMenu-extensions-themes-button { display: none !important; }
+  }
+
   @media -moz-pref("ultima.navbar.hide.buttons") {
     #navigator-toolbox {
       --uo-opacity: 0;

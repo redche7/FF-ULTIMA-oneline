@@ -6,6 +6,14 @@
  * See FOXONE-LICENSE.txt for the original notice.
  */
 
+/* Animate a focus fraction, not viewport-dependent widths. Resize applies the
+ * new central area immediately, including during an unfinished transition. */
+@property --uo-focus-progress {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
 :root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
   --uo-row-height: 44px;
   /* Geometry follows this height; appearance.css sets the shared-row tab surfaces.
@@ -15,9 +23,17 @@
   --uo-bookmarks-height: 36px;
   --uo-bookmarks-space: 0px;
   --uo-menubar-height: 0px;
-  --uo-field-width: clamp(140px, calc(40vw - 140px), 360px);
-  --uo-focus-width: var(--uo-field-width);
+  --uo-field-preferred-width: clamp(140px, calc(40vw - 140px), 360px);
+  --uo-field-min-width: 140px;
+  --uo-tabs-rest-space: clamp(224px, calc(40vw - 160px), 448px);
   --uo-tabs-min-space: 176px;
+  /* The counted central area depends on the viewport, never on focus. Native
+   * overflow checks resize/Customize, not Ctrl+L. Cap it for core controls on
+   * narrow windows; optional widgets compete for the remaining toolbar width.
+   */
+  --uo-central-width: clamp(calc(var(--uo-field-min-width) + var(--uo-tabs-min-space)), calc(100vw - 360px), calc(var(--uo-field-preferred-width) + var(--uo-tabs-rest-space)));
+  --uo-field-rest-width: min(var(--uo-field-preferred-width), calc(var(--uo-central-width) - var(--uo-tabs-min-space)));
+  --uo-focus-width: min(360px, calc(var(--uo-central-width) - var(--uo-tabs-min-space)));
   --uc-navbar-height: var(--uo-row-height) !important;
   --uc-tabbar-height: var(--uo-row-height) !important;
   --uc-bookbar-height: var(--uo-bookmarks-space) !important;
@@ -64,44 +80,75 @@
     min-width: 0 !important;
   }
 
-  /* The flexible gap is real nav-bar space. Native overflow must reserve a
-   * useful minimum for tabs instead of consuming the entire row with widgets.
-   * Unlike the old helium layout, the right edge follows actual visible tools.
+  /* These fixed siblings are counted by native overflow. Keep their complete
+   * hit boxes instead of squeezing the overflow icon against extensions. */
+  #nav-bar > :is(#nav-bar-overflow-button, #PanelUI-button, .titlebar-buttonbox-container) {
+    flex-shrink: 0 !important;
+  }
+
+  /* Only surplus space lives in the pseudo-element. The counted central area
+   * is the real URL width plus its end margin: Firefox sums real children and
+   * margins, but does not count pseudo-elements.
    */
   #nav-bar-customization-target::after {
     content: "";
     order: 1;
-    flex: 1 0 var(--uo-tabs-min-space);
-    min-width: var(--uo-tabs-min-space);
+    flex: 1 1 0;
+    min-width: 0;
   }
 
-  #nav-bar-customization-target > toolbarspring,
   #nav-bar .titlebar-spacer,
   #TabsToolbar .titlebar-spacer {
     display: none !important;
   }
 
-  #nav-bar-customization-target > #urlbar-container ~ :is(toolbarbutton, toolbaritem) {
+  /* Custom flexible spaces should separate controls without taking the width
+   * reserved for tabs. Apply the same small, shrinkable range on either side. */
+  #nav-bar-customization-target > toolbarspring:not(.titlebar-spacer),
+  #TabsToolbar-customization-target > toolbarspring {
+    flex: 1 1 16px !important;
+    min-width: 0 !important;
+    max-width: 32px !important;
+  }
+
+  #nav-bar-customization-target > #urlbar-container ~ :is(toolbarbutton, toolbaritem, toolbarspring) {
     order: 2 !important;
     flex-shrink: 0 !important;
   }
+  #nav-bar-customization-target > #urlbar-container ~ toolbarspring {
+    flex-shrink: 1 !important;
+  }
 
   #urlbar-container {
+    --uo-focus-progress: 0;
+    /* Width and margin read the same animated value, so their sum stays fixed. */
+    --uo-field-width: calc(var(--uo-field-rest-width) + (var(--uo-focus-width) - var(--uo-field-rest-width)) * var(--uo-focus-progress));
     anchor-name: --uo-field !important;
+    box-sizing: border-box !important;
     flex: 0 0 var(--uo-field-width) !important;
     width: var(--uo-field-width) !important;
-    min-width: 0 !important;
+    min-width: var(--uo-field-width) !important;
     max-width: var(--uo-field-width) !important;
     contain: inline-size !important;
     margin-inline: 0 !important;
-    transition: flex-basis 0.25s ease, width 0.25s ease, max-width 0.25s ease !important;
+    margin-inline-end: calc(var(--uo-central-width) - var(--uo-field-width)) !important;
+    transition: --uo-focus-progress 180ms ease-out !important;
   }
 
-  /* nth-child's filtered list includes only visible siblings after the field.
-   * Empty right tool groups fall back to overflow/menu anchors outside target.
+  /* Include a leading spring in the right boundary so tabs cannot occupy the
+   * custom gap before the tools. Empty groups use the overflow/menu anchors.
    */
-  #nav-bar-customization-target > :nth-child(1 of #urlbar-container ~ :is(toolbarbutton, toolbaritem):not([hidden], [overflowedItem])) {
-    anchor-name: --uo-right-tools !important;
+  @media (width > 650px) {
+    #nav-bar-customization-target > :nth-child(1 of #urlbar-container ~ :is(toolbarbutton, toolbaritem, toolbarspring):not([hidden], [overflowedItem], .titlebar-spacer)) {
+      anchor-name: --uo-right-tools !important;
+    }
+  }
+  @media (width <= 650px) {
+    /* Narrow-mode springs and extensions do not occupy this row. Anchor to
+     * the first remaining widget, or fall back to overflow/menu. */
+    #nav-bar-customization-target > :nth-child(1 of #urlbar-container ~ :is(toolbarbutton, toolbaritem):not([hidden], [overflowedItem], #unified-extensions-button)) {
+      anchor-name: --uo-right-tools !important;
+    }
   }
   #nav-bar[overflowing] #nav-bar-overflow-button { anchor-name: --uo-overflow !important; }
   #PanelUI-button { anchor-name: --uo-menu !important; }
@@ -209,12 +256,25 @@
     --uo-bookmarks-space: 0px;
   }
 
-  @media (max-width: 1200px) {
-    --uo-focus-width: min(clamp(140px, calc(50vw - 140px), 360px), max(140px, calc(100vw - 500px)));
-    &:has(#urlbar:is(:focus-within, [focused])) { --uo-field-width: var(--uo-focus-width); }
-  }
   @media (max-width: 800px) {
-    --uo-tabs-min-space: 136px;
+    /* Prefer a usable tab strip to optional toolbar widgets. Firefox moves
+     * widgets into its overflow panel as this counted reserve grows. */
+    --uo-tabs-rest-space: clamp(96px, calc(100vw - 440px), 224px);
+    --uo-tabs-min-space: 128px;
+    --uo-field-min-width: 100px;
+  }
+  @media (max-width: 550px) {
+    /* At 125% scaling, a ~630 physical-pixel window is only ~500 CSS pixels.
+     * Keep the core navigation/menu controls and one scrollable tab available. */
+    --uo-field-min-width: 64px;
+    --uo-tabs-min-space: 96px;
+  }
+
+  /* Focus borrows from the central area's margin, leaving its counted total
+   * and the right tools unchanged. Always retain the minimum tab space.
+   */
+  &:has(#urlbar:is(:focus-within, [focused])) #urlbar-container {
+    --uo-focus-progress: 1;
   }
   @media (prefers-reduced-motion: reduce) {
     #urlbar-container { transition: none !important; }
