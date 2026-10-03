@@ -17,6 +17,10 @@ bar also retain Ultima's layout.
 `ultima.spacing.compact.tabs` does not shrink tabs separately in one-line mode;
 it keeps its original behavior in ordinary Ultima.
 
+In one-line mode, the tab counter keeps its label above 1100 CSS px, shows only
+the number at narrower widths, and hides at 800 CSS px or less to leave room
+for tabs.
+
 For all other settings, see the [Ultima Wiki](https://ff-ultima.github.io/docs/category/theme-settings).
 
 In dark mode, Container Style 3 uses a 50% container-color tint and light text on

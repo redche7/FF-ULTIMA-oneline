@@ -1,0 +1,46 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+@media -moz-pref("ultima.tabs.tabCounter") {
+  /* Keep vertical status outside the scroller. Ultima's absolute/fixed label
+   * can overlap New Tab and wrap beyond the collapsed sidebar's narrow width.
+   * A real flex item reserves its own space, also when the tabs overflow.
+   */
+  :root #tabbrowser-arrowscrollbox[orient="vertical"] > #tabbrowser-arrowscrollbox-periphery::after {
+    content: none !important;
+  }
+  :root #tabbrowser-tabs[orient="vertical"]::after {
+    /* Firefox's author stylesheet owns this slot's empty content and border;
+     * userChrome needs !important to replace those author declarations.
+     * Ultima also hides the divider with !important opacity on overflow.
+     */
+    content: counter(tabcount) " Tabs Open" !important;
+    display: block;
+    opacity: 1 !important;
+    border: 0 !important;
+    flex: 0 0 auto;
+    min-height: 18px;
+    margin-block: 4px;
+    margin-inline: 0 !important;
+    padding-inline: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 18px;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--toolbarbutton-icon-fill, currentColor) 50%, transparent);
+    pointer-events: none;
+  }
+  :root #tabbrowser-tabs[orient="vertical"]:not([expanded])::after {
+    content: counter(tabcount) !important;
+    font-style: normal;
+  }
+  @media (forced-colors) {
+    :root #tabbrowser-tabs[orient="vertical"]::after { color: CanvasText; }
+  }
+}
