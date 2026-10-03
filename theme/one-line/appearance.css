@@ -12,7 +12,8 @@
   /* Keep tab surfaces proportional to the address field. Ultima's standalone
    * compact.tabs setting must not shrink just one part of this shared row.
    */
-  --uo-tab-height: 30px;
+  --uo-tab-height: 34px;
+  &[uidensity="compact"] { --uo-tab-height: 30px; }
   &[uidensity="touch"] { --uo-tab-height: 34px; }
   #tabbrowser-tabs[orient="horizontal"] {
     --tab-border-radius: var(--uo-tab-radius) !important;
