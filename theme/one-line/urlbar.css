@@ -7,6 +7,14 @@
  */
 
 :root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
+  /* Ultima's nested focus/open selector gives its 3px background margin
+   * extra ID specificity. Include the navbar so this reset wins in every
+   * field state; the input and native popover keep their own geometry.
+   */
+  #nav-bar #urlbar > .urlbar-background {
+    margin-top: 0 !important;
+  }
+
   /* Preserve the prototype's neutral focus frame and native popover.
    * Joint background offsets/separator still need a separate refinement;
    * these rules do not yet make the two background halves flush.
@@ -32,7 +40,6 @@
     #urlbar[focused]:not([suppress-focus-border]) > .urlbar-background,
     #urlbar[popover-open] > .urlbar-background {
       border: 1px solid var(--uo-field-frame) !important;
-      margin-top: 0 !important;
     }
     #urlbar[popover-open] > .urlbar-background {
       border-end-start-radius: 0 !important;
