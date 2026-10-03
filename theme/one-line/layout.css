@@ -8,8 +8,8 @@
 
 :root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
   --uo-row-height: 44px;
-  /* Use Ultima's tab surface height until a separate appearance module
-   * adjusts it. The hit/drag row keeps its own density-dependent height.
+  /* Geometry follows this height; appearance.css sets the shared-row tab surfaces.
+   * The hit/drag row keeps its own density-dependent height.
    */
   --uo-tab-height: var(--tab-min-height, 35px);
   --uo-bookmarks-height: 36px;
@@ -129,8 +129,11 @@
     align-items: center !important;
   }
 
-  #tabbrowser-tabs[orient="horizontal"]:not([movingtab]) {
+  #tabbrowser-tabs[orient="horizontal"] {
     min-width: 0 !important;
+    /* Match the actual surface plus its two 2px margins, so native strip
+     * minimums cannot shift this smaller strip within the centered row. */
+    min-height: calc(var(--uo-tab-height) + 4px) !important;
     padding-top: 0 !important;
     padding-inline-start: 0 !important;
     max-height: var(--uo-row-height) !important;
@@ -138,7 +141,16 @@
   #tabbrowser-tabs[orient="horizontal"] {
     flex: 1 1 0 !important;
     --tab-min-height: var(--uo-tab-height);
+    --tabstrip-min-height: calc(var(--uo-tab-height) + 4px);
     height: calc(var(--uo-tab-height) + 4px) !important;
+  }
+  /* Firefox adds a downward drop region through padding/negative margin.
+   * In this centered one-line flex row it shifts the whole strip during drag.
+   * Keep the strip box stable; native reorder/grouping still handles the drag.
+   */
+  #tabbrowser-tabs[orient="horizontal"][movingtab] {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
   }
   #tabbrowser-arrowscrollbox,
   #tabbrowser-arrowscrollbox-periphery {

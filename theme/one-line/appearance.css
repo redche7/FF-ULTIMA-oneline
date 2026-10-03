@@ -1,0 +1,75 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Layout/reveal ideas incorporate Firnschnee/FoxOne (MIT).
+ * See FOXONE-LICENSE.txt for the original notice.
+ */
+
+:root:not([customizing], [inDOMFullscreen], [popup-window], [chromehidden~="toolbar"]):has(#tabbrowser-tabs[orient="horizontal"]) {
+  --uo-tab-radius: 8px;
+
+  /* Keep tab surfaces proportional to the address field. Ultima's standalone
+   * compact.tabs setting must not shrink just one part of this shared row.
+   */
+  --uo-tab-height: 30px;
+  &[uidensity="touch"] { --uo-tab-height: 34px; }
+  #tabbrowser-tabs[orient="horizontal"] {
+    --tab-border-radius: var(--uo-tab-radius) !important;
+  }
+  #tabbrowser-tabs .tab-background {
+    border-radius: var(--uo-tab-radius) !important;
+  }
+
+  @media not (forced-colors) {
+    @media -moz-pref("ultima.tabs.tab.outline", "full") and -moz-pref("ultima.tabs.tab.outline.color", "gradient") {
+      /* Ultima paints its full gradient on this existing pseudo-element.
+       * The clipped SVG stroke yields a thin ring with matching 8px corners.
+       * Other outline modes and multiselection keep their native paint.
+       */
+      #tabbrowser-tabs .tabbrowser-tab[selected]:not([multiselected]) > .tab-stack::after {
+        box-sizing: border-box;
+        border-radius: var(--uo-tab-radius) !important;
+        padding: 0 !important;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' rx='8' width='100%25' height='100%25' stroke='red' stroke-width='2' fill='none' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") !important;
+        pointer-events: none;
+      }
+      /* Nova otherwise paints another frame behind Ultima's gradient ring. */
+      #tabbrowser-tabs .tab-background[selected]:not([multiselected]) {
+        outline: none !important;
+        background-image: none !important;
+      }
+    }
+    @media (prefers-color-scheme: dark) and -moz-pref("user.theme.0.default") {
+      /* Reference appearance choice for the default dark scheme, not a
+       * universal compatibility fix. Other palettes and container tabs retain
+       * their own fill/text pairing.
+       */
+      #tabbrowser-tabs .tabbrowser-tab:not([usercontextid]) {
+        /* Native drag-stack shadows also use the selected surface color. */
+        --tab-background-color-selected: #171519 !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab:not([usercontextid]) .tab-background:is([selected], [multiselected]),
+      #tabbrowser-tabs .tabbrowser-tab[dragtarget]:not([usercontextid]) .tab-background {
+        /* Dragging can overlap other tab content: keep this surface opaque. */
+        background-color: #171519 !important;
+      }
+      @media -moz-pref("ultima.tabs.tab.outline", "full") and -moz-pref("ultima.tabs.tab.outline.color", "gradient") {
+        /* Nova single selection paints layered backgrounds. Replace the whole
+         * surface while Ultima owns the gradient frame; retain selection outlines.
+         * Use the tab's state, including drag, independently of inherited flags.
+         */
+        #tabbrowser-tabs .tabbrowser-tab:is([selected], [visuallyselected], [multiselected], [dragtarget]):not([usercontextid]) > .tab-stack > .tab-background {
+          background: #171519 !important;
+        }
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #tabbrowser-tabs .tabbrowser-tab[selected] > .tab-stack::after,
+    #tabbrowser-tabs .tabbrowser-tab[selected] .tab-background::before {
+      animation: none !important;
+    }
+  }
+}

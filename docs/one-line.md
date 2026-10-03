@@ -34,6 +34,25 @@ Firefox's own bookmarks visibility still applies. One-line does not reveal a
 toolbar hidden through Firefox's toolbar menu. Window density controls the
 combined row height; no preference values are changed by CSS.
 
+## Tab appearance
+
+Tab surfaces have 8px corners and are 30 CSS px high at normal/compact window
+density, and 34px at touch density. `ultima.spacing.compact.tabs` does not resize
+them separately while one-line is active; it retains its ordinary Ultima behavior
+in fallback mode. The combined toolbar row keeps its existing density-dependent
+height. Further reductions across the whole row are not part of this appearance
+module. Display scaling can make screenshot measurements differ from CSS sizes.
+
+The full gradient outline uses a thin clipped SVG ring and suppresses Nova's
+additional selected frame. Other outline modes and multiselection retain their existing outlines; forced
+colors retain their existing paint. Reduced motion stops full/top outline animations.
+
+The default dark scheme uses opaque `#171519` for selected, multiselected and
+dragged tab surfaces as a reference appearance choice. Other color schemes and container tabs retain their selected
+fill; container styles keep their matching text color. These rules
+apply only while one-line is active; vertical and ordinary Ultima tabs are outside
+this module's scope.
+
 ## Fallbacks
 
 One-line applies to ordinary horizontal-tab windows. Customize Toolbar, vertical
