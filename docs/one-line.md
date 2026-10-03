@@ -18,3 +18,6 @@ bar also retain Ultima's layout.
 it keeps its original behavior in ordinary Ultima.
 
 For all other settings, see the [Ultima Wiki](https://ff-ultima.github.io/docs/category/theme-settings).
+
+In dark mode, Container Style 3 uses a 50% container-color tint and light text on
+the selected tab. This shared styling also applies to ordinary Ultima layouts.

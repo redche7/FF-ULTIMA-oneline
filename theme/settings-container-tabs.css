@@ -1,0 +1,19 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/* Container Style 3 keeps inactive tabs saturated. Subdue only the active
+ * surface so Ultima's selection frame remains distinct in every layout.
+ * Use light selected text against the tinted dark surface.
+ */
+@media -moz-pref("ultima.tabs.tabContainer.3") and (prefers-color-scheme: dark) {
+  @media not ((forced-colors) or (prefers-contrast)) {
+    #tabbrowser-tabs .tabbrowser-tab[usercontextid][selected] > .tab-stack > .tab-background {
+      background: color-mix(in srgb, var(--identity-icon-color) 50%, var(--uc-urlbar-background)) !important;
+    }
+    #tabbrowser-tabs .tabbrowser-tab[usercontextid][selected] .tab-text {
+      color: var(--uc-text) !important;
+    }
+  }
+}
