@@ -1,9 +1,14 @@
 /*///////////////////////////////////////////////////////////////////////////////////////\
 
-┏┓┏┓  ┳┳┓ ┏┳┓┳┳┳┓┏┓
-┣ ┣   ┃┃┃  ┃ ┃┃┃┃┣┫
-┻ ┻   ┗┛┗┛ ┻ ┻┛ ┗┛┗
+┏┓┏┓  ┳┳┓ ┏┳┓┳┳┳┓┏┓   ┏┓ ┏┓┏ ┏━ ┳  ┳ ┏┓┏ ┏━
+┣ ┣   ┃┃┃  ┃ ┃┃┃┃┣┫━━ ┃┃ ┃┗┫ ┣━ ┃  ┃ ┃┗┫ ┣━
+┻ ┻   ┗┛┗┛ ┻ ┻┛ ┗┛┗   ┗┛ ┛ ┗ ┗━ ┗━ ┻ ┛ ┗ ┗━
 
+FF Ultima-oneline: https://github.com/redche7/FF-ULTIMA-oneline
+Latest Version:    https://github.com/redche7/FF-ULTIMA-oneline/releases/latest
+License:           https://github.com/redche7/FF-ULTIMA-oneline/blob/main/LICENSE MPL 2.0
+
+Based on the original FF Ultima:
 FF Ultima:         https://github.com/soulhotel/FF-ULTIMA
 Wiki:              https://ff-ultima.github.io/docs/getting-started
 Latest Version:    https://github.com/soulhotel/FF-ULTIMA/releases/latest
@@ -28,8 +33,14 @@ user_pref("user.theme.brave", false);
 user_pref("user.theme.ayu", false);
 user_pref("user.theme.rose-pine", false);
 
-/* fork one-line layout; false restores ordinary Ultima on restart */
+/* One-line layout: Nova and horizontal tabs; false restores ordinary Ultima. */
 user_pref("ultima.oneline.enabled", true);
+user_pref("browser.nova.enabled", true);
+user_pref("sidebar.verticalTabs", false);
+
+/* Compact density by default; also expose it in Firefox's density controls. */
+user_pref("browser.uidensity", 1);
+user_pref("browser.compactmode.show", true);
 
 /* nav bar */
 user_pref("ultima.navbar.autohide", false);
@@ -179,12 +190,14 @@ user_pref("user.theme.wallpaper.fluent.dark", false);
 user_pref("user.theme.wallpaper.fluent.light", false);
 user_pref("user.theme.wallpaper.ayu", false);
 user_pref("browser.newtabpage.activity-stream.newtabWallpapers.customWallpaper.enabled", true);
-user_pref("browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar", false);
+/* Hand New Tab search input to the address bar. */
+user_pref("browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar", true);
 
 /* extra configs */
 user_pref("ultima.enable.nightly.config", false);
 user_pref("ultima.enable.js.config", false);
-user_pref("widget.windows.mica", true);
+/* Keep the theme's toolbar colors instead of the Windows backdrop. */
+user_pref("widget.windows.mica", false);
 user_pref("widget.windows.mica.extra", true);
 user_pref("widget.windows.mica.popups", 2);
 user_pref("widget.windows.mica.toplevel-backdrop", 2);
